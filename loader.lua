@@ -1,73 +1,73 @@
 -- Ken's Obfuscated Code
 
-local b64_0xll1II1 = {}
-local char_0xI1I1I1='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-for i_0xIIIIll=1,#char_0xI1I1I1 do b64_0xll1II1[char_0xI1I1I1:sub(i_0xIIIIll,i_0xIIIIll)] = i_0xIIIIll - 1 end
+local b64_0x111lll = {}
+local char_0xlIIIl1='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for i_0xIIIlll=1,#char_0xlIIIl1 do b64_0x111lll[char_0xlIIIl1:sub(i_0xIIIlll,i_0xIIIlll)] = i_0xIIIlll - 1 end
 
-function b64_0xll1II1.dec_0x11I1II(d_0xIlllll)
-    d_0xIlllll = string.gsub(d_0xIlllll, '[^'..char_0xI1I1I1..'=]', '')
-    local r_0xIlllII = {}
-    for i_0xIIIIll=1, #d_0xIlllll, 4 do
-        local c_0xIlIllI = b64_0xll1II1[d_0xIlllll:sub(i_0xIIIIll,i_0xIIIIll)] or 0
-        local c_0xlIIlII = b64_0xll1II1[d_0xIlllll:sub(i_0xIIIIll+1,i_0xIIIIll+1)] or 0
+function b64_0x111lll.dec_0xII1IIl(d_0xIlIIII)
+    d_0xIlIIII = string.gsub(d_0xIlIIII, '[^'..char_0xlIIIl1..'=]', '')
+    local r_0xl1llll = {}
+    for i_0xIIIlll=1, #d_0xIlIIII, 4 do
+        local c_0xlII1ll = b64_0x111lll[d_0xIlIIII:sub(i_0xIIIlll,i_0xIIIlll)] or 0
+        local c_0xl1Il1l = b64_0x111lll[d_0xIlIIII:sub(i_0xIIIlll+1,i_0xIIIlll+1)] or 0
         
-        local c_0xIlI1Il, c_0xlIIlIl = 0, 0
+        local c_0xIIllll, c_0x1l1III = 0, 0
         local has3 = true
         local has4 = true
 
-        local ch3 = d_0xIlllll:sub(i_0xIIIIll+2,i_0xIIIIll+2)
-        if ch3 == "=" then has3 = false else c_0xIlI1Il = b64_0xll1II1[ch3] or 0 end
+        local ch3 = d_0xIlIIII:sub(i_0xIIIlll+2,i_0xIIIlll+2)
+        if ch3 == "=" then has3 = false else c_0xIIllll = b64_0x111lll[ch3] or 0 end
 
-        local ch4 = d_0xIlllll:sub(i_0xIIIIll+3,i_0xIIIIll+3)
-        if ch4 == "=" then has4 = false else c_0xlIIlIl = b64_0xll1II1[ch4] or 0 end
+        local ch4 = d_0xIlIIII:sub(i_0xIIIlll+3,i_0xIIIlll+3)
+        if ch4 == "=" then has4 = false else c_0x1l1III = b64_0x111lll[ch4] or 0 end
         
-        local b_0x11lIII = c_0xIlIllI * (2^18) + c_0xlIIlII * (2^12) + c_0xIlI1Il * (2^6) + c_0xlIIlIl
+        local b_0xlllIIl = c_0xlII1ll * (2^18) + c_0xl1Il1l * (2^12) + c_0xIIllll * (2^6) + c_0x1l1III
         
-        local b_0xll1II1 = math.floor(b_0x11lIII / (2^16)) % (2^8)
-        local b_0xl1lIll = math.floor(b_0x11lIII / (2^8)) % (2^8)
-        local b_0xIllIlI = b_0x11lIII % (2^8)
+        local b_0xlll1ll = math.floor(b_0xlllIIl / (2^16)) % (2^8)
+        local b_0xII1llI = math.floor(b_0xlllIIl / (2^8)) % (2^8)
+        local b_0xlI1lIl = b_0xlllIIl % (2^8)
         
-        table.insert(r_0xIlllII, string.char(b_0xll1II1))
-        if has3 then table.insert(r_0xIlllII, string.char(b_0xl1lIll)) end
-        if has4 then table.insert(r_0xIlllII, string.char(b_0xIllIlI)) end
+        table.insert(r_0xl1llll, string.char(b_0xlll1ll))
+        if has3 then table.insert(r_0xl1llll, string.char(b_0xII1llI)) end
+        if has4 then table.insert(r_0xl1llll, string.char(b_0xlI1lIl)) end
     end
-    return table.concat(r_0xIlllII)
+    return table.concat(r_0xl1llll)
 end
 
 
-local function bxor_0xlIlllI(a_0xllIl1l,b_0xIl1llI)
-    if bit32 then return bit32.bxor(a_0xllIl1l,b_0xIl1llI) end
-    local r_0xlIIIIl = 0
-    for i_0x1I1II1 = 0, 7 do
-        local x_0xIIl111 = a_0xllIl1l % 2
-        local y_0xlIllII = b_0xIl1llI % 2
-        if x_0xIIl111 ~= y_0xlIllII then r_0xlIIIIl = r_0xlIIIIl + (2^i_0x1I1II1) end
-        a_0xllIl1l = math.floor(a_0xllIl1l / 2)
-        b_0xIl1llI = math.floor(b_0xIl1llI / 2)
+local function bxor_0xlIIl1l(a_0x1l1lI1,b_0xIlIIIl)
+    if bit32 then return bit32.bxor(a_0x1l1lI1,b_0xIlIIIl) end
+    local r_0xI1lIlI = 0
+    for i_0xlIIII1 = 0, 7 do
+        local x_0xI11llI = a_0x1l1lI1 % 2
+        local y_0xIllIll = b_0xIlIIIl % 2
+        if x_0xI11llI ~= y_0xIllIll then r_0xI1lIlI = r_0xI1lIlI + (2^i_0xlIIII1) end
+        a_0x1l1lI1 = math.floor(a_0x1l1lI1 / 2)
+        b_0xIlIIIl = math.floor(b_0xIlIIIl / 2)
     end
-    return r_0xlIIIIl
+    return r_0xI1lIlI
 end
 
 
-local function dec_0xllll11(s_0xlllI11, k_0xIlI1II)
-    local r_0x1IIllI = {}
-    for i_0x1llll1=1, #s_0xlllI11 do
-        local b_0xlI11II = string.byte(s_0xlllI11, i_0x1llll1)
-        local kb_0xIlIlll = string.byte(k_0xIlI1II, (i_0x1llll1-1) % #k_0xIlI1II + 1)
-        r_0x1IIllI[i_0x1llll1] = string.char(bxor_0xlIlllI(b_0xlI11II, kb_0xIlIlll))
+local function dec_0xll1I1l(s_0xll1Ill, k_0x1llllI)
+    local r_0xII1llI = {}
+    for i_0xlIlI11=1, #s_0xll1Ill do
+        local b_0xlllIll = string.byte(s_0xll1Ill, i_0xlIlI11)
+        local kb_0xl1lIll = string.byte(k_0x1llllI, (i_0xlIlI11-1) % #k_0x1llllI + 1)
+        r_0xII1llI[i_0xlIlI11] = string.char(bxor_0xlIIl1l(b_0xlllIll, kb_0xl1lIll))
     end
-    return table.concat(r_0x1IIllI)
+    return table.concat(r_0xII1llI)
 end
 
 
-local d_0xllIIII = {
-  {op=255, val="IiIbMh5VCE08Px09BiUHWS0oMTdSSEtfLyAdfSIZClsrBBxZHhoIWSJtGyYABw5WOhgWOgQQGUsrBBxzT1UMWSMoVhQTGA5xKkcUPBEUBxgeIRkqFwcYGHNtHzIfEFF/KzkrNgADAlsrZVoDHhQSXTw+Wnp4GQRbLyFYPx0WClQeIRkqFwdLBW4dFDILEBlLYAEXMBMZO1QvNB0hUlhGGK7107PK1ouA+a3A/pLM6Nj2x5jq+1UMWSMoVhkdFyJcbq3B0JLN8tj215jrwJXTv671+bPK1ouA3a3A5lKV0rmu9e2zy/2LgNWtwNKSzf7Y9vlYBhwcHV08Ph0aFlWLgMqtwOSSzcYYKSwVNlwyClUrBBxZeFhGGK70+LPK9IuBya3AyZLN9Nj2/Jjr9ZXTua709LPK/4uA/63AypLM6tj275jr85XSvK7137PL/IuBzq3AzZLN3Nj3xZjr35XSu67107PL/IuBzq3A8JLN3tj275jr85XTs6708bPKxouByq3Ax5LM4tj2ypjq+pXTiq712nNaldK8rvXZs8v9i4HOrcDIks3O2Pb6mOvfldO/rvXis8rWi4DtrcDEks3a2PbZUVkeGghZIm0eJhwWH1EhI1ghBxs4XS98UHp4VUsYbj0KOhwBQxocOBY9GxsMAm4eHTJSREsQCigeMgcZHxghP1gAAhAIUSgkG3pQXGEYbm1YPx0UD0s6PxE9FV0MWSMoQhsGARt/KzlQcRoBH0g9d1d8ABQcFikkDDsHFx5LKz8bPBwBDlY6Yxs8H1ogXSAuEDpBWjhZJyEXIV8FAl0tKFchFxMYFyYoGTcBWgZZJyNXGB4UIE03AR04XBkeWWxkUXtbfw5WKkdyPx0WClRuKw09EQECVyBtCiYcJg5ZfGVRWVJVSxg+PxE9Bl1JajsjFjocElEYHSgZc0BXQjJubVhzHhoKXD05CjocEkNfLyAdaToBH0gJKAx7UB0fTD4+QnxdBwpPYCoRJxoACU09KAowHRsfXSA5VjAdGERzKyMbOxtGRGsvJBQ8AFgbUSsuHXwAEA1LYSUdMhYGRFUvJBZ8ORkKUzs0FDYZJg5ZfGMUJhNXQhFmZHI2HBFhMmNgWLPK1ouA/K3A8ZLN6tj2/5jr0VU7VC8uHRoWVYuBzq3A2pLN9dj2/5jrwpXSuK718LPKx4uA/q3A25LN7DIiIhsyHlUbVC8uHQARBwJIOj5YblIOYRhubVgIRUJcDHl7TWtAQFoKfXslc09VGU0gHh0yQ1lhGG5tWAhDRlsJeHpKZUVMXgp/dEEOUkhLSjsjKzYTR2FFREdVflJERRiu9e2zytaLgOmtwNuSzcHY9uCY6+iV07Cu9cqzyvRLaCIsGzY7EUvY9syY6vqV05Wu9eFZGxNLSCIsGzYhFhlRPjkLCBEAGUorIwwDHhQIXQcpJXMGHQ5WRG1Yc1IFB1ktKCswABwbTD0WGyYABw5WOh0UMhEQIlwTZVFZUlVLGERgVXNAW0vY9tuY6vuV04qu9PyzytSLgcatwdOSzePY9uBYAx4UCF0HKVizy/SLgNutwdtSMgpVKwQcc1ogBVE4KAogFzwPEW6twMaSzcjY9sqY6/OV04mu9eKzyuKLgPutwduSzerY9v6Y69mV06Gu9exZFxkYXScrWDAHBxldIDktPRsDDko9KDE3UkhWGHd8QGVFRFIJeHlYJxoQBTJubVhzAgcCVjplWgAXFFoaZ0dYc1JVGU0gHh0yQ11CMkQoFCAXf0sYbm1VflKV07mu9duzyuaLgPutwdeSzcrY98WY6vKV07qu9PGzyseLgc6twNSSzdzY98WY69+V06Gu9PyzyveLgOOtwOOSzO/Y9u6Y6vKV052u9dpZUlVLGCIiGzIeJQdZNygKaTkcCFNmbyswAAcCSDptNjwGVThNPj0XIQZXQjIrIxw=", is_enc=true},
+local d_0x11llI1 = {
+  {op=255, val="IiIbMh5VCE08Px09BiUHWS0oMTdSSEtfLyAdfSIZClsrBBxZHhoIWSJtGyYABw5WOhgWOgQQGUsrBBxzT1UMWSMoVhQTGA5xKkcUPBEUBxgeIRkqFwcYGHNtHzIfEFF/KzkrNgADAlsrZVoDHhQSXTw+Wnp4GQRbLyFYPx0WClQeIRkqFwdLBW4dFDILEBlLYAEXMBMZO1QvNB0hUlhGGK7107PK1ouA+a3A/pLM6Nj2x5jq+1UMWSMoVhkdFyJcbq3B0JLN8tj215jrwJXTv671+bPK1ouA3a3A5lKV0rmu9e2zy/2LgNWtwNKSzf7Y9vlYBhwcHV08Ph0aFlWLgMqtwOSSzcYYKSwVNlwyClUrBBxZeFhGGK70+LPK9IuBya3AyZLN9Nj2/Jjr9ZXTua709LPK/4uA/63AypLM6tj275jr85XSvK7137PL/IuBzq3AzZLN3Nj3xZjr35XSu67107PL/IuBzq3A8JLN3tj275jr85XTs6708bPKxouByq3Ax5LM4tj2ypjq+pXTiq712nNaldK8rvXZs8v9i4HOrcDIks3O2Pb6mOvfldO/rvXis8rWi4DtrcDEks3a2PbZUVkeGghZIm0eJhwWH1EhI1ghBxs4XS98UHp4VUsYbj0KOhwBQxocOBY9GxsMAm4eHTJSREsQCigeMgcZHxghP1gAAhAIUSgkG3pQXGEYbm1YPx0UD0s6PxE9FV0MWSMoQhsGARt/KzlQcRoBH0g9d1d8ABQcFikkDDsHFx5LKz8bPBwBDlY6Yxs8H1ogXSAuEDpBWiBULwYNKj4QABUdLBE/HQcbUSsuHXwAEA1LYSUdMhYGRFUvJBZ8ARQCVCE/CDoXFg5nIS8eJgEWCkwrKVY/BxRJEWdlUVkXGw8yRCEXMBMZS147IxsnGxoFGDw4FgAXFFkQZ0dYc1JVG0onIwx7UCceViAkFjRIVThdL21KcVt/SxhubRQ8ExEYTDwkFjRaEgpVK3cwJwYFLF06ZVo7BgEbS3RiVyETAkVfJzkQJhAAGF08Lhc9BhAFTGAuFz5dPg5WLSURYF0+B1kFOAEfFx5Gay8kFDwABQJdLShXIRcTGBcmKBk3AVoGWScjVwAXFFkWIjgZcVtcQxFEKBY3eH9GFW6twPCSzdnY9u+Y6/OV04qu9dtzIhkKWysEHHOSzOvY9sSY6+yV04qu9cizy/WLgMatwOGSzdvY9sWY6/V/B1ctLBRzAhkKWyseGyEbBR9LbnBYKHhVSxhuFk9kRUFcDnt1SmZDR1gOE21FcwAABWsrLEl/eFVLGG4WSWBCRF0PfHtPakdHWgF3EFhuUgceVh0oGWF4CGEyY2BYYlxVi4DbrcDwks3M2PbFmOvYldOVrvXis8r9i4D8rcDSUiUHWS0oMTdSldO5rvTws8rYi4DXRxE1UgUHWS0oKzAAHBtMPRYbJgAHDlY6HRQyERAiXBNtDDsXG2EYbm1YIx4UCF0dLgo6AgEYYy04CiEXGx9oIiwbNjsRNhBnR1hzUlVhFWNtSn1SldOurvTxs8rHi4HKrcDykszj2PfNmOv6ldOVbh0UMhEQIlxurcHSks3+2PfFWBQTGA5xKm1QBhwcHV08Ph0aFlxL2PbYmOvRldO/rvX5s8rEi4DUrcDEks3e2PfFmOvzldOLrvXTs8rsi4DaRx0/ARACXm4uDSEAEAVMGyMRJRcHGF0HKVhuT1VSCXZ7T2JLRF0MbjkQNhx/SxhubQghGxsfEGweHTJDV0Iybm1YcwAABWsrLEl7W39hXSI+HVlSVUsYY2BYs8r0i4DtrcDAks3e2PfJmOvTldKwrvT4s8r3i4HHrcDhkszr2PbKmOvFldKwrvXVs8rsi4HKrcDRks3G2Pb9mOr2ldObrvT4s8rQi4DsR1hzUlUHVy0sFAMeFBJdPHczOhEeQxodLgo6AgFLdiE5WAAHBRtXPDlaengQBVw=", is_enc=true},
 }
-local pc_0xIIlI1l = 1
-local stk_0xIllI1I = {}
+local pc_0xll1lll = 1
+local stk_0xIIlIl1 = {}
 
 
-local disp_0x1IlIlI = {
+local disp_0xIllll1 = {
     [0xA1] = function(s, v) table.insert(s, v) end, 
     [0xA2] = function(s, v) table.insert(s, tonumber(v)) end, 
     [0xB0] = function(s, n) 
@@ -93,19 +93,19 @@ local disp_0x1IlIlI = {
 }
 
 
-while pc_0xIIlI1l <= #d_0xllIIII do
-    local inst = d_0xllIIII[pc_0xIIlI1l]
+while pc_0xll1lll <= #d_0x11llI1 do
+    local inst = d_0x11llI1[pc_0xll1lll]
     local opcode = inst.op
     local val = inst.val
     
     if inst.is_enc then
-        val = dec_0xllll11(b64_0xll1II1.dec_0x11I1II(val), "NMxSruk8")
+        val = dec_0xll1I1l(b64_0x111lll.dec_0xII1IIl(val), "NMxSruk8")
     end
     
-    local handler = disp_0x1IlIlI[opcode]
+    local handler = disp_0xIllll1[opcode]
     if handler then
-        handler(stk_0xIllI1I, val)
+        handler(stk_0xIIlIl1, val)
     end
     
-    pc_0xIIlI1l = pc_0xIIlI1l + 1
+    pc_0xll1lll = pc_0xll1lll + 1
 end
