@@ -1,905 +1,175 @@
--- ==========================================
--- [ 1. โหลด Fluent UI Library ]
--- ==========================================
-local Library = loadstring(game:HttpGetAsync("https://github.com/ActualMasterOogway/Fluent-Renewed/releases/latest/download/Fluent.luau"))()
-local SaveManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau"))()
-local InterfaceManager = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau"))()
+-- Ken's Hardened V2 Fix
 
-local Window = Library:CreateWindow{
-    Title = "Klakuylek Hub",
-    SubTitle = "Hybrid Time Guard",
-    TabWidth = 160,
-    Size = UDim2.fromOffset(830, 525),
-    Acrylic = true, 
-    Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.RightShift
-}
+local b64_0x1lIlIl = {}
+local char_0xlIl1l1='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for i_0xlllIII=1,#char_0xlIl1l1 do b64_0x1lIlIl[char_0xlIl1l1:sub(i_0xlllIII,i_0xlllIII)] = i_0xlllIII - 1 end
 
-local Tabs = {
-    Main = Window:CreateTab{ Title = "Main", Icon = "sword" },
-    Settings = Window:CreateTab{ Title = "Settings", Icon = "settings" }
-}
-
-local Options = Library.Options
-
--- ==========================================
--- [ 2. ตั้งค่าตัวแปรเกม ]
--- ==========================================
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
-local Workspace = game:GetService("Workspace")
-local VirtualInputManager = game:GetService("VirtualInputManager")
-local GuiService = game:GetService("GuiService")
-local TweenService = game:GetService("TweenService")
-local HttpService = game:GetService("HttpService") -- สำหรับ JSON
-
-local Player = Players.LocalPlayer
-local Character = Player.Character or Player.CharacterAdded:Wait()
-local RootPart = Character:WaitForChild("HumanoidRootPart")
-local Humanoid = Character:WaitForChild("Humanoid")
-
-local Remotes = ReplicatedStorage:WaitForChild("Assets"):WaitForChild("Remotes")
-local POST = Remotes:WaitForChild("POST")
-local GET = Remotes:WaitForChild("GET")
-local TitansFolder = Workspace:FindFirstChild("Titans")
-local ButtonsFolder = Player:FindFirstChild("PlayerGui"):WaitForChild("Interface"):FindFirstChild("Buttons")
-
-local PlaceId = game.PlaceId
-local isRaidMap = (PlaceId == 14012874501 or PlaceId == 13379349730)
-local RaidBossWeakPoints = {} 
-local isLobby = Workspace:GetAttribute("Map") == "Lobby"
-
--- 🔥 [Variables]
-local farmingStarted = false
-local fallbackStartTime = 0
-local LAST_TITAN_THRESHOLD = 5 
-local runCounter = 0
-local lastJoinAttempt = 0
-
-local opFarmInitialized = false
-local OP_FLY_HEIGHT = 300
-local OP_MAX_TARGETS = 3
-
-local antiGravityConn = nil
-local savedHoverY = nil
-
--- [ระบบบันทึก Run Count ลงไฟล์]
-local runCountFile = "NonnyHub/game/runcount_" .. Player.Name .. "_" .. tostring(game.GameId) .. ".json"
-
-local function saveRunCount()
-    if not isfolder("NonnyHub") then makefolder("NonnyHub") end
-    if not isfolder("NonnyHub/game") then makefolder("NonnyHub/game") end
-    
-    pcall(function()
-        local data = { count = runCounter }
-        writefile(runCountFile, HttpService:JSONEncode(data))
-    end)
-end
-
-local function loadRunCount()
-    pcall(function()
-        if isfile(runCountFile) then
-            local rawData = readfile(runCountFile)
-            local data = HttpService:JSONDecode(rawData)
-            if data and type(data.count) == "number" then
-                runCounter = data.count
-                print("Loaded Run Count: " .. runCounter)
-            end
-        end
-    end)
-end
-
--- โหลดค่า Run Count ทันทีที่เริ่มสคริปต์
-loadRunCount()
-
-local function getRaidAnchorPos()
-    local unclimbable = workspace:FindFirstChild("Unclimbable")
-    if not unclimbable then return nil end
-    if PlaceId == 14012874501 then
-        local background = unclimbable:FindFirstChild("Background")
-        if background then
-            local npc = background:FindFirstChild("Attack_Titan")
-            if npc then
-                if npc:IsA("Model") then return npc:GetPivot().Position
-                elseif npc:IsA("BasePart") then return npc.Position end
-            end
-        end
-    elseif PlaceId == 13379349730 then
-        local objective = unclimbable:FindFirstChild("Objective")
-        if objective then
-            local boat = objective:FindFirstChild("Boat1")
-            if boat then
-                if boat:IsA("Model") then return boat:GetPivot().Position
-                elseif boat:IsA("BasePart") then return boat.Position end
-            end
-        end
+function b64_0x1lIlIl.dec_0xI1IIll(d_0xII1llI)
+    d_0xII1llI = string.gsub(d_0xII1llI, '[^'..char_0xlIl1l1..'=]', '')
+    local r_0x1IIlIl = {}
+    for i_0xlllIII=1, #d_0xII1llI, 4 do
+        local c_0xlIll1I = b64_0x1lIlIl[d_0xII1llI:sub(i_0xlllIII,i_0xlllIII)] or 0
+        local c_0xl1lI1l = b64_0x1lIlIl[d_0xII1llI:sub(i_0xlllIII+1,i_0xlllIII+1)] or 0
+        local c_0xIlIIlI, c_0xIlIlI1 = 0, 0
+        local has3 = true
+        local has4 = true
+        local ch3 = d_0xII1llI:sub(i_0xlllIII+2,i_0xlllIII+2)
+        if ch3 == "=" then has3 = false else c_0xIlIIlI = b64_0x1lIlIl[ch3] or 0 end
+        local ch4 = d_0xII1llI:sub(i_0xlllIII+3,i_0xlllIII+3)
+        if ch4 == "=" then has4 = false else c_0xIlIlI1 = b64_0x1lIlIl[ch4] or 0 end
+        local b_0xIlllll = c_0xlIll1I * (2^18) + c_0xl1lI1l * (2^12) + c_0xIlIIlI * (2^6) + c_0xIlIlI1
+        local b_0x11II11 = math.floor(b_0xIlllll / (2^16)) % (2^8)
+        local b_0x1111II = math.floor(b_0xIlllll / (2^8)) % (2^8)
+        local b_0xIlII1l = b_0xIlllll % (2^8)
+        table.insert(r_0x1IIlIl, string.char(b_0x11II11))
+        if has3 then table.insert(r_0x1IIlIl, string.char(b_0x1111II)) end
+        if has4 then table.insert(r_0x1IIlIl, string.char(b_0xIlII1l)) end
     end
-    return nil
+    return table.concat(r_0x1IIlIl)
 end
 
--- ==========================================
--- [ 3. ฟังก์ชันระบบทำงาน ]
--- ==========================================
-local FLY_OFFSET = 200
-local FLY_SPEED = 300
-local JITTER_AMOUNT = 2 
-local isFlying = false
-local NoclipConnection = nil
-local flightConnection = nil 
 
-local function humanizedFlyTo(targetPos)
-    if not RootPart or isFlying then return end 
-    isFlying = true
-    RootPart.Anchored = false
-    Humanoid.PlatformStand = true
-    RootPart.AssemblyLinearVelocity = Vector3.zero
-    
-    local goalPos = targetPos + Vector3.new(
-        math.random(-5, 5), 
-        FLY_OFFSET + math.random(-2, 2), 
-        math.random(-5, 5)
-    )
-
-    if flightConnection then flightConnection:Disconnect() end
-    
-    flightConnection = RunService.Heartbeat:Connect(function(dt)
-        if not isFlying then return end
-        
-        local direction = (goalPos - RootPart.Position)
-        local distance = direction.Magnitude
-        
-        if distance < 5 then
-            isFlying = false
-            RootPart.AssemblyLinearVelocity = Vector3.zero
-            if flightConnection then flightConnection:Disconnect(); flightConnection = nil end
-            return
-        end
-
-        local moveStep = direction.Unit * (FLY_SPEED * dt)
-        
-        local jitter = Vector3.new(
-            math.random() * JITTER_AMOUNT - JITTER_AMOUNT/2,
-            math.random() * JITTER_AMOUNT - JITTER_AMOUNT/2,
-            math.random() * JITTER_AMOUNT - JITTER_AMOUNT/2
-        )
-        
-        RootPart.CFrame = CFrame.new(RootPart.Position + moveStep + jitter, goalPos)
-        RootPart.AssemblyLinearVelocity = Vector3.zero
-    end)
-end
-
-local function findNearestStation()
-    for _, obj in pairs(workspace:GetDescendants()) do
-        if (obj.Name:find("Refill") or obj.Name:find("Station")) and (obj:IsA("Model") or obj:IsA("BasePart")) then return obj end
+local function bxor_0xIl1lI1(a_0x1IIllI,b_0x11llII)
+    if bit32 then return bit32.bxor(a_0x1IIllI,b_0x11llII) end
+    local r_0x1l1IlI = 0
+    for i_0x1IlIIl = 0, 7 do
+        local x_0xlIl111 = a_0x1IIllI % 2
+        local y_0x1IlIll = b_0x11llII % 2
+        if x_0xlIl111 ~= y_0x1IlIll then r_0x1l1IlI = r_0x1l1IlI + (2^i_0x1IlIIl) end
+        a_0x1IIllI = math.floor(a_0x1IIllI / 2)
+        b_0x11llII = math.floor(b_0x11llII / 2)
     end
-    return nil
+    return r_0x1l1IlI
 end
 
-local function hasSpareBlades()
-    local rig = Character:FindFirstChild("Rig_" .. Player.Name)
-    if rig then
-        for i = 1, 3 do
-            local spare = rig:FindFirstChild("Left_" .. i, true)
-            if spare and spare:GetAttribute("Used") == nil then return true end
-        end
+
+local function bxor_str_0xlIlI1I(s_0x1lI1Il, k_0xIl1lIl)
+    local r_0xIIIIll = {}
+    for i_0xlllIlI=1, #s_0x1lI1Il do
+        local b_0xIll11I = string.byte(s_0x1lI1Il, i_0xlllIlI)
+        local kb_0xlIllIl = string.byte(k_0xIl1lIl, (i_0xlllIlI-1) % #k_0xIl1lIl + 1)
+        r_0xIIIIll[i_0xlllIlI] = string.char(bxor_0xIl1lI1(b_0xIll11I, kb_0xlIllIl))
     end
-    return false
+    return table.concat(r_0xIIIIll)
 end
 
-local function isBladeEmpty()
-    local rig = Character:FindFirstChild("Rig_" .. Player.Name)
-    if rig and rig:FindFirstChild("LeftHand") then
-        local blade = rig.LeftHand:FindFirstChild("Blade_1")
-        if not blade or blade.Transparency == 1 then return true end
-    end
-    return false
+
+local function getkeys_0xl111I1()
+    local seed = b64_0x1lIlIl.dec_0xI1IIll("M3FrdGt3eFU=")
+    local k1_enc = b64_0x1lIlIl.dec_0xI1IIll("eT9aRwYVCy0=")
+    local k2_enc = b64_0x1lIlIl.dec_0xI1IIll("ajAPGSodGgI=")
+    return bxor_str_0xlIlI1I(k1_enc, seed), bxor_str_0xlIlI1I(k2_enc, seed)
 end
 
-local lastRefillAttempt = 0
-local REFILL_COOLDOWN = 2.5 
 
-local function safeRefillBlades()
-    if tick() - lastRefillAttempt < REFILL_COOLDOWN then return end
-    lastRefillAttempt = tick()
-    
-    if hasSpareBlades() then 
-        pcall(function() GET:InvokeServer("Blades", "Reload") end)
-    else 
-        local s = findNearestStation()
-        if s then 
-            pcall(function() POST:FireServer("Attacks", "Reload", s) end) 
-        end 
-    end
-end
-
-local function trackBossWeakPoint(bossModel)
-    if not bossModel then return end
-    local marker = bossModel:FindFirstChild("Marker") or bossModel:WaitForChild("Marker", 30)
-    if not marker then return end
-    RaidBossWeakPoints[bossModel.Name] = marker.Adornee
-    marker:GetPropertyChangedSignal("Adornee"):Connect(function() RaidBossWeakPoints[bossModel.Name] = marker.Adornee end)
-    local hum = bossModel:FindFirstChildOfClass("Humanoid")
-    if hum then hum.Died:Connect(function() RaidBossWeakPoints[bossModel.Name] = nil end) end
-end
-
-local function monitorRaidBosses()
-    if not isRaidMap then return end
-    task.spawn(function()
-        local s, a = pcall(function() return TitansFolder:WaitForChild("Attack_Titan", 300) end)
-        if s and a then trackBossWeakPoint(a) end
-    end)
-    task.spawn(function()
-        local s, a = pcall(function() return TitansFolder:WaitForChild("Armored_Titan", 300) end)
-        if s and a then trackBossWeakPoint(a) end
-    end)
-end
-
-local function getAvailableBossWeakPoint()
-    if not Options.BossBurst.Value then return nil end
-    for bossName, weakPoint in pairs(RaidBossWeakPoints) do
-        if weakPoint and weakPoint:IsA("BasePart") and weakPoint.Parent then
-            return weakPoint
+local function cff_0xlll1Il(a_0xlll11l)
+    local st_0x1I1l1l = 0
+    local res_0xlIl1lI = a_0xlll11l
+    while true do
+        if st_0x1I1l1l == 0 then
+            res_0xlIl1lI = res_0xlIl1lI + 1
+            st_0x1I1l1l = 1
+        elseif st_0x1I1l1l == 1 then
+            res_0xlIl1lI = res_0xlIl1lI * 2
+            st_0x1I1l1l = 2
+        elseif st_0x1I1l1l == 2 then
+            res_0xlIl1lI = res_0xlIl1lI - 3
+            st_0x1I1l1l = 3
         else
-            RaidBossWeakPoints[bossName] = nil
+            break
         end
     end
-    return nil
+    return res_0xlIl1lI
 end
 
-local function getAliveTitanCount()
-    local count = 0
-    if not TitansFolder then return 0 end
-    for _, titan in ipairs(TitansFolder:GetChildren()) do
-        if titan:IsA("Model") then
-            local hum = titan:FindFirstChildOfClass("Humanoid")
-            if hum and hum.Health > 0 then
-                count = count + 1
-            end
-        end
-    end
-    return count
-end
 
-local function getTargetCluster(maxCount, radius)
-    local closestPart, minDistance, anchorPosition = nil, math.huge, RootPart.Position
-    if isRaidMap then local p = getRaidAnchorPos(); if p then anchorPosition = p end end
-    if not TitansFolder then return {}, nil end
-    
-    for _, titan in ipairs(TitansFolder:GetChildren()) do
-        if titan:IsA("Model") and titan:FindFirstChildOfClass("Humanoid") and titan.Humanoid.Health > 0 and titan:FindFirstChild("Hitboxes") then
-            local tp = nil
-            if RaidBossWeakPoints[titan.Name] then 
-                tp = RaidBossWeakPoints[titan.Name]
-            else 
-                local h = titan.Hitboxes:FindFirstChild("Hit"); 
-                if h then tp = h:FindFirstChild("Nape") end 
-            end
-            
-            if tp then local d = (anchorPosition - tp.Position).Magnitude; if d < minDistance then minDistance = d; closestPart = tp end end
-        end
-    end
-    
-    if not closestPart then return {}, nil end
-    local t, lim = {}, {}
-    
-    for _, titan in ipairs(TitansFolder:GetChildren()) do
-        if titan:IsA("Model") and titan:FindFirstChildOfClass("Humanoid") and titan.Humanoid.Health > 0 and titan:FindFirstChild("Hitboxes") then
-            local tp = nil
-            if RaidBossWeakPoints[titan.Name] then 
-                tp = RaidBossWeakPoints[titan.Name]
-            else 
-                local h = titan.Hitboxes:FindFirstChild("Hit"); 
-                if h then tp = h:FindFirstChild("Nape") end 
-            end
-            
-            if tp and (tp.Position - closestPart.Position).Magnitude <= radius then table.insert(t, tp) end
-        end
-    end
-    table.sort(t, function(a, b) return (a.Position - closestPart.Position).Magnitude < (b.Position - closestPart.Position).Magnitude end)
-    for i = 1, math.min(#t, maxCount) do table.insert(lim, t[i]) end
-    return lim, closestPart.Position
-end
+local function chain_0xIl1l11(x) return x*2 end
+local function chain_0xlIl11I(x) return chain_0xIl1l11(x)+1 end
 
-local function getAllTargets()
-    local targets = {}
-    if not TitansFolder then return targets end
-    for _, titan in ipairs(TitansFolder:GetChildren()) do
-        if titan:IsA("Model") and titan:FindFirstChildOfClass("Humanoid") and titan.Humanoid.Health > 0 then
-            local tp = nil
-            if RaidBossWeakPoints[titan.Name] then 
-                tp = RaidBossWeakPoints[titan.Name]
-            else
-                local hb = titan:FindFirstChild("Hitboxes")
-                if hb then local hf = hb:FindFirstChild("Hit"); if hf then tp = hf:FindFirstChild("Nape") or hf:FindFirstChildWhichIsA("BasePart") end end
-            end
-            if tp then table.insert(targets, tp) end
-        end
-    end
-    return targets
-end
 
-local function performSimulatedClick(x, y)
-    if GuiService.MenuIsOpen then return end
-    pcall(function()
-        VirtualInputManager:SendMouseButtonEvent(x, y, 0, true, game, 0)
-        task.wait(math.random(50, 150) / 1000)
-        VirtualInputManager:SendMouseButtonEvent(x, y, 0, false, game, 0)
-    end)
-end
+local d_0x11lI1I = {
+  {op=255, val="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", is_enc=true},
+}
+local pc_0xll11lI = 1
+local stk_0x1IIIlI = {}
+stk_0x1IIIlI._jmp = nil
 
-local function executeMultiSlash(napesArray)
-    if not napesArray or #napesArray == 0 then return false end
-    local mainTarget = napesArray[1]
-    if mainTarget and mainTarget.Parent then
-        pcall(function()
-            workspace.CurrentCamera.CFrame = CFrame.lookAt(workspace.CurrentCamera.CFrame.Position, mainTarget.Position)
-        end)
-        task.wait(math.random(50, 100) / 1000)
-    end
 
-    POST:FireServer("Attacks", "Slash", true)
-    if Options.EnableAntiCheatActions and Options.EnableAntiCheatActions.Value then
-        task.wait(math.random(50, 100) / 1000)
-        performSimulatedClick(1400 + math.random(-15, 15), 900 + math.random(-15, 15))
-    end
-    
-    task.wait(math.random(0.5, 1))
-    for _, napePart in ipairs(napesArray) do
-        if napePart and napePart.Parent then
-            task.spawn(function()
-                pcall(function() GET:InvokeServer("Hitboxes", "Register", napePart, math.random(180, 260), math.random(10, 100)) end)
-            end)
-        end
-    end
-    return true
-end
-
-local function executeOPSlash(napesArray)
-    if not napesArray or #napesArray == 0 then return false end
-    POST:FireServer("Attacks", "Slash", true)
-    for _, napePart in ipairs(napesArray) do
-        if napePart and napePart.Parent then
-            task.spawn(function()
-                pcall(function() GET:InvokeServer("Hitboxes", "Register", napePart, math.random(180, 260), math.random(10, 100)) end)
-            end)
-        end
-    end
-    return true
-end
-
-local function executeBossBurst(bossPart, burstAmount)
-    if not bossPart then return false end
-    for i = 1, burstAmount do
-        task.wait(math.random(0.5, 1))
-        task.spawn(function()
-            pcall(function() POST:FireServer("Attacks", "Slash", true) end)
-            task.wait(math.random(1, 5) / 1000)
-            pcall(function() GET:InvokeServer("Hitboxes", "Register", bossPart, math.random(180, 260), math.random(10, 100)) end)
-        end)
-    end
-    return true
-end
-
-local function selectAndPressEnter(button)
-    if button and button:IsA("GuiButton") then
-        GuiService.SelectedObject = button; task.wait(0.3)
-        VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game); task.wait(0.1)
-        VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game); task.wait(0.2)
-        GuiService.SelectedObject = nil
-    end
-end
-
-local function openRaidChests()
-    local cg = Player.PlayerGui:FindFirstChild("Interface") and Player.PlayerGui.Interface:FindFirstChild("Chests")
-    if not cg or not cg.Visible then return false end
-    local fb = cg:FindFirstChild("Free"); local t = 0
-    while not fb and t < 15 do task.wait(1); t = t + 1; fb = cg:FindFirstChild("Free") end
-    if fb then selectAndPressEnter(fb); task.wait(1.5) end
-    local pb = cg:FindFirstChild("Premium"); if pb and Options.OpenPremiumChest.Value then selectAndPressEnter(pb); task.wait(1.5) end
-    local fnb = cg:FindFirstChild("Finish"); if fnb then selectAndPressEnter(fnb); task.wait(1); return true end
-    return false
-end
-
-local function isRaidCompleted()
-    local inf = Player.PlayerGui:FindFirstChild("Interface"); if not inf then return false end
-    local c, r = inf:FindFirstChild("Chests"), inf:FindFirstChild("Rewards")
-    if c and c.Visible then return true end
-    if r and r.Visible then return true end
-    return false
-end
-
-local function joinBoostedMission()
-    local MissionCreated = false
-    local boostedMap = Workspace:GetAttribute("Boosted_Map")
-    if not boostedMap then
-        Library:Notify({Title="Error", Content="No Boosted Map found!", Duration=3})
-        return false
-    end
-
-    local raidMaps = {"Attack Titan", "Armored Titan", "Female Titan", "Colossal Titan"}
-    if table.find(raidMaps, boostedMap) then
-        Library:Notify({Title="Info", Content="Boosted map is a Raid, skipping...", Duration=3})
-        return false
-    end
-
-    Library:Notify({Title="Boosted Map", Content="Attempting to join: " .. boostedMap, Duration=3})
-
-    local difficulties = {"Aberrant", "Severe", "Hard", "Normal", "Easy"}
-
-    for _, diff in ipairs(difficulties) do
-        local mapData = {
-            Name = boostedMap,
-            Difficulty = diff,
-            Type = "Missions",
-            Objective = "Skirmish"
-        }
-
-        local success, result = pcall(function()
-            return GET:InvokeServer("S_Missions", "Create", mapData)
-        end)
-
-        if success and result then
-            MissionCreated = true
-        end
-
-        if MissionCreated then
-            Library:Notify({Title="Success", Content="Created " .. diff .. " lobby! Starting...", Duration=3})
-            task.wait(1)
-            GET:InvokeServer("S_Missions", "Start")
-            return true
-        end
-    end
-
-    Library:Notify({Title="Error", Content="Failed to create lobby (No valid difficulty).", Duration=3})
-    return false
-end
--- ==========================================
--- [ 4. สร้าง UI Elements ]
--- ==========================================
-Tabs.Main:CreateToggle("OPFarm", {
-    Title = "OP Farm (Sky Nuke)",
-    Description = "Risky!!",
-    Default = false
-})
-
-Tabs.Main:CreateToggle("BossBurst", {
-    Title = "Raid Boss Burst",
-    Description = "Risky!!",
-    Default = false
-})
-
-Tabs.Main:CreateSlider("BurstAmount", {
-    Title = "Burst Hits Amount",
-    Min = 1, Max = 5, Default = 5, Rounding = 0
-})
-
-Tabs.Main:CreateSection("Auto Farm (Safe)")
-Tabs.Main:CreateToggle("Autofarm", { Title = "Auto Farm (Safe)", Description = "", Default = false })
-Tabs.Main:CreateToggle("EnableAntiCheatActions", { Title = "Anti-Cheat Simulation", Description = "Simulate Q,E randomly", Default = true })
-Tabs.Main:CreateSlider("TargetLimit", { Title = "AoE Target Limit", Description = "Recommended 3-5", Min = 1, Max = 10, Default = 5, Rounding = 0 })
-Tabs.Main:CreateSlider("AoERadius", { Title = "AoE Radius (Slash Range)", Min = 50, Max = 1000, Default = 250, Rounding = 0 })
-Tabs.Main:CreateSlider("SlashDelay", { Title = "Slash Delay", Min = 0.1, Max = 2.0, Default = 0.6, Rounding = 1 })
-
-Tabs.Main:CreateSection("Time Guard")
-Tabs.Main:CreateToggle("UseMissionTimer", { 
-    Title = "Hybrid Time Guard", 
-    Description = "Stop farming until input time", 
-    Default = false 
-})
-
-Tabs.Main:CreateInput("MinMissionTime", { Title = "Min. Mission Time (Seconds)", Default = "60", Numeric = true, Placeholder = "e.g. 120" })
-
-local TimerDisplay = Tabs.Main:CreateParagraph("TimerDisplay", {
-    Title = "Timer Status",
-    Content = "Status: Idle"
-})
-
-Tabs.Main:CreateSection("Misc")
-Tabs.Main:CreateToggle("OpenPremiumChest", { Title = "Open Premium Chest", Default = false })
-Tabs.Main:CreateToggle("AutoRetry", { Title = "Auto Retry", Default = true })
-
-local RunDisplay = Tabs.Main:CreateParagraph("RunDisplay", {
-    Title = "Run Progress",
-    Content = "Current: 0 / Max: 0"
-})
-
-Tabs.Main:CreateInput("MaxRuns", { 
-    Title = "Max Runs (0 = Infinite)", 
-    Default = "0", 
-    Numeric = true, 
-    Placeholder = "e.g. 10" 
-})
-
--- [ลบปุ่ม Reset Run Count ออกแล้ว]
-
-Tabs.Main:CreateButton{
-    Title = "Shadow Ban Check",
-    Description = "Check if you are shadow banned.",
-    Callback = function()
-        local isExploiter = Player:GetAttribute("Exploiter")
-        if isExploiter then
-            Library:Notify({ Title = "Shadow Ban Status", Content = "⚠️ BANNED: You are Shadow Banned!", Duration = 5 })
+local disp_0x11Illl = {
+    [0] = function() end,
+    [1] = function(s, v) table.insert(s, v) end,
+    [2] = function(s, v) table.insert(s, _G[v]) end,
+    [3] = function(s, v) local val=table.remove(s); _G[v]=val end,
+    [4] = function(s, _) table.insert(s, {}) end,
+    [5] = function(s, _) local val=table.remove(s); local key=table.remove(s); local t=table.remove(s); t[key]=val; table.insert(s, t) end,
+    [16] = function(s) local b=tonumber(table.remove(s)) or 0; local a=tonumber(table.remove(s)) or 0; table.insert(s, a+b) end,
+    [17] = function(s) local b=tonumber(table.remove(s)) or 0; local a=tonumber(table.remove(s)) or 0; table.insert(s, a-b) end,
+    [18] = function(s) local b=tonumber(table.remove(s)) or 0; local a=tonumber(table.remove(s)) or 0; table.insert(s, a*b) end,
+    [19] = function(s) local b=tonumber(table.remove(s)) or 0; local a=tonumber(table.remove(s)) or 0; table.insert(s, a/b) end,
+    [32] = function(s, n) 
+        local args = {}
+        for i=1,tonumber(n) do table.insert(args, 1, table.remove(s)) end
+        local f = table.remove(s)
+        if type(f) == "function" then
+            local result = {f(unpack(args))}
+            for _,v in ipairs(result) do table.insert(s, v) end
         else
-            Library:Notify({ Title = "Shadow Ban Status", Content = "✅ SAFE: You are not banned.", Duration = 5 })
+            print("[LBI] Not a function: "..tostring(f))
+        end
+    end,
+    [33] = function(s) return table.remove(s) end,
+    [48] = function(s, offset) 
+        local cond = table.remove(s)
+        if not cond then 
+            s._jmp = tonumber(offset)
+        end
+    end,
+    [49] = function(s, offset)
+        s._jmp = tonumber(offset)
+    end,
+    [255] = function(s, v)
+        local fn, err = loadstring(v)
+        if not fn then
+            print("[LBI] Load error: "..tostring(err))
+        else
+            local ok, res = pcall(fn)
+            if not ok then print("[LBI] Run error: "..tostring(res)) end
         end
     end
 }
 
-Tabs.Main:CreateToggle("AutoJoinBoosted", {
-    Title = "Auto Join Boosted Mission",
-    Description = "Automatically joins boosted map when in lobby.",
-    Default = false
-})
 
--- ==========================================
--- [ 5. Loop หลัก ]
--- ==========================================
-spawn(function()
-    while task.wait(0.5) do
-        local currentCount = runCounter
-        local maxCount = tonumber(Options.MaxRuns.Value) or 0
-        
-        local statusText
-        if maxCount == 0 then
-            statusText = string.format("Current: %d / Max: ∞ (Infinite)", currentCount)
-        else
-            statusText = string.format("Current: %d / Max: %d", currentCount, maxCount)
+
+local k1, k2 = getkeys_0xl111I1()
+
+local state_0xIlIIlI = 0
+while true do
+    if state_0xIlIIlI == 0 then  -- FETCH
+        if pc_0xll11lI > #d_0x11lI1I then break end
+        local inst = d_0x11lI1I[pc_0xll11lI]
+        local opcode = inst.op
+        local val = inst.val
+        if inst.is_enc then
+            local d = b64_0x1lIlIl.dec_0xI1IIll(val)
+            d = bxor_str_0xlIlI1I(d, k2)
+            val = bxor_str_0xlIlI1I(d, k1)
         end
-        
-        RunDisplay:SetContent(statusText)
+        stk_0x1IIIlI._jmp = nil
+        pc_0xll11lI = pc_0xll11lI + 1
+        cur_op_0xllIlII = opcode
+        cur_val_0xIlIl1l = val
+        state_0xIlIIlI = 1
+
+    elseif state_0xIlIIlI == 1 then  -- EXECUTE
+        local handler = disp_0x11Illl[cur_op_0xllIlII]
+        if handler then
+            handler(stk_0x1IIIlI, cur_val_0xIlIl1l)
+        end
+        if stk_0x1IIIlI._jmp then
+            pc_0xll11lI = pc_0xll11lI + stk_0x1IIIlI._jmp
+        end
+        state_0xIlIIlI = 0
+    else
+        break
     end
-end)
-
--- [เพิ่มเติม] Loop สำหรับ Reset Run Count เมื่ออยู่ใน Lobby
-spawn(function()
-    while task.wait(2) do
-        if isLobby then
-            if runCounter ~= 0 then
-                runCounter = 0
-                saveRunCount()
-                Library:Notify({Title="Lobby Detected", Content="Run Count Reset to 0", Duration=2})
-            end
-        end
-    end
-end)
-
-spawn(function()
-    spawn(monitorRaidBosses)
-    
-    while task.wait(0.1) do
-        if Humanoid.Health <= 0 then
-            if flightConnection then flightConnection:Disconnect(); flightConnection = nil end
-            if antiGravityConn then antiGravityConn:Disconnect(); antiGravityConn = nil end
-            isFlying = false; opFarmInitialized = false; savedHoverY = nil
-            
-            farmingStarted = false
-            
-            Character = Player.Character or Player.CharacterAdded:Wait()
-            RootPart = Character:WaitForChild("HumanoidRootPart")
-            Humanoid = Character:WaitForChild("Humanoid")
-            task.wait(2)
-            continue
-        end
-
-        if not Options.Autofarm.Value and not Options.OPFarm.Value then 
-            if flightConnection then flightConnection:Disconnect(); flightConnection = nil end
-            if antiGravityConn then antiGravityConn:Disconnect(); antiGravityConn = nil end
-            isFlying = false; opFarmInitialized = false; savedHoverY = nil; Humanoid.PlatformStand = false; RootPart.Anchored = false
-            
-            farmingStarted = false
-            
-            if NoclipConnection then
-                NoclipConnection:Disconnect()
-                NoclipConnection = nil
-                if Character then
-                    for _, p in pairs(Character:GetDescendants()) do
-                        if p:IsA("BasePart") then p.CanCollide = true end
-                    end
-                end
-            end
-            continue 
-        end
-
-        if not antiGravityConn then
-            antiGravityConn = RunService.Heartbeat:Connect(function()
-                if RootPart and not RootPart.Anchored and (Options.Autofarm.Value or Options.OPFarm.Value) then
-                    RootPart.AssemblyLinearVelocity = Vector3.zero
-                    if savedHoverY and not isFlying then
-                        RootPart.CFrame = CFrame.new(RootPart.CFrame.X, savedHoverY, RootPart.CFrame.Z)
-                    end
-                end
-            end)
-        end
-
-        local success, skipGui = pcall(function() return Player.PlayerGui.Interface.Skip end)
-        if success and skipGui and skipGui.Visible then
-            local ib = skipGui:FindFirstChild("Interact")
-            if ib and ib:IsA("GuiButton") then
-                task.wait(math.random(100, 300)/1000)
-                GuiService.SelectedObject = ib; task.wait(0.1)
-                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game); task.wait(0.05)
-                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game); task.wait(0.1)
-                GuiService.SelectedObject = nil
-            end
-        end
-
-        if not NoclipConnection then
-            NoclipConnection = RunService.Stepped:Connect(function()
-                if Character and (Options.Autofarm.Value or Options.OPFarm.Value) then
-                    for _, p in pairs(Character:GetDescendants()) do
-                        if p:IsA("BasePart") and p ~= RootPart then 
-                            p.CanCollide = false 
-                        end
-                    end
-                end
-            end)
-        end
-
-        local currentBossTarget = getAvailableBossWeakPoint()
-        local aliveCount = getAliveTitanCount()
-
-        local isLastPhase = aliveCount <= LAST_TITAN_THRESHOLD
-        local canKill = true
-
-        if Options.UseMissionTimer.Value and isLastPhase then
-            local minTime = tonumber(Options.MinMissionTime.Value) or 60
-            
-            if not farmingStarted then
-                farmingStarted = true
-                fallbackStartTime = tick()
-            end
-
-            local gameTime = Workspace:GetAttribute("Seconds")
-            if not gameTime then gameTime = tick() - fallbackStartTime end
-            
-            if gameTime < minTime then
-                canKill = false
-            else
-                canKill = true
-            end
-        else
-            canKill = true
-        end
-
-        if Options.OPFarm.Value then
-            if flightConnection then flightConnection:Disconnect(); flightConnection = nil end
-            isFlying = false; Humanoid.PlatformStand = true
-            
-            if not opFarmInitialized then
-                if RootPart.Position.Y < (OP_FLY_HEIGHT - 10) then
-                    Humanoid.PlatformStand = true
-                    RootPart.Anchored = true 
-                    
-                    local targetPos = CFrame.new(RootPart.Position.X, OP_FLY_HEIGHT, RootPart.Position.Z)
-                    local distance = math.abs(OP_FLY_HEIGHT - RootPart.Position.Y)
-                    local duration = math.clamp(distance / 150, 1, 5)
-                    
-                    local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
-                    local tween = TweenService:Create(RootPart, tweenInfo, {CFrame = targetPos})
-                    
-                    tween:Play()
-                    tween.Completed:Wait()
-                end
-                
-                RootPart.Anchored = true
-                RootPart.AssemblyLinearVelocity = Vector3.zero
-                opFarmInitialized = true
-            end
-            
-            if isBladeEmpty() then 
-                if not savedHoverY then savedHoverY = RootPart.CFrame.Y end
-                RootPart.Anchored = false 
-                safeRefillBlades() 
-                task.wait(1) 
-                continue 
-            end
-
-            if savedHoverY then 
-                RootPart.Anchored = true
-                savedHoverY = nil 
-            end
-
-            if currentBossTarget then
-                performSimulatedClick(1400 + math.random(-15, 15), 900 + math.random(-15, 15))
-                executeBossBurst(currentBossTarget, Options.BurstAmount.Value)
-            else
-                local allTargets = getAllTargets()
-                local limitedTargets = {}
-                for i = 1, math.min(#allTargets, OP_MAX_TARGETS) do table.insert(limitedTargets, allTargets[i]) end
-
-                if #limitedTargets > 0 then
-                    if canKill then
-                        performSimulatedClick(1400 + math.random(-15, 15), 900 + math.random(-15, 15))
-                        executeOPSlash(limitedTargets) 
-                    else
-                        task.wait(1) 
-                    end
-                end
-            end
-            
-            task.wait(1)
-            continue 
-        end
-
-        if Options.Autofarm.Value then
-            opFarmInitialized = false; RootPart.Anchored = false 
-            
-            if isBladeEmpty() then 
-                if not savedHoverY then savedHoverY = RootPart.CFrame.Y end 
-                safeRefillBlades()
-                task.wait(1)
-                continue
-            end
-            
-            if savedHoverY then savedHoverY = nil end 
-            
-            if currentBossTarget then
-                humanizedFlyTo(currentBossTarget.Position)
-                while isFlying do task.wait(0.05) end
-                
-                if canKill then
-                    executeBossBurst(currentBossTarget, Options.BurstAmount.Value)
-                end
-                task.wait(math.max(0.1, Options.SlashDelay.Value + math.random(-0.1, 0.2)))
-            else
-                local limit = Options.TargetLimit.Value
-                local radius = Options.AoERadius.Value
-                local baseDelay = Options.SlashDelay.Value
-                
-                local targets, anchorPos = getTargetCluster(limit, radius)
-
-                if #targets > 0 and anchorPos then
-                    humanizedFlyTo(anchorPos)
-                    while isFlying do task.wait(0.05) end
-                    
-                    if canKill then
-                        executeMultiSlash(targets)
-                    end
-                    task.wait(math.max(0.1, baseDelay + math.random(-0.1, 0.2)))
-                else task.wait(0.5) end
-            end
-        end
-    end
-end)
-
-spawn(function()
-    while task.wait(0.1) do
-        if Options.UseMissionTimer.Value then
-            local minTime = tonumber(Options.MinMissionTime.Value) or 60
-            local gameTime = Workspace:GetAttribute("Seconds")
-            
-            if not gameTime then
-                 if not farmingStarted then fallbackStartTime = tick() end
-                 gameTime = tick() - fallbackStartTime
-            end
-            
-            local remaining = minTime - gameTime
-            
-            if remaining > 0 then
-                local minutes = math.floor(remaining / 60)
-                local seconds = math.floor(remaining % 60)
-                local timeString = string.format("%02d:%02d", minutes, seconds)
-                
-                TimerDisplay:SetContent(timeString)
-            else
-                TimerDisplay:SetContent("Ready!")
-            end
-        else
-            TimerDisplay:SetContent("--:--")
-        end
-    end
-end)
-
-spawn(function()
-    while task.wait(math.random(5, 15)) do
-        if Options.Autofarm.Value and Options.EnableAntiCheatActions and Options.EnableAntiCheatActions.Value then
-            pcall(function()
-                local k = (math.random(1, 2) == 1) and Enum.KeyCode.Q or Enum.KeyCode.E
-                VirtualInputManager:SendKeyEvent(true, k, false, game)
-                task.wait(math.random(100, 500) / 1000)
-                VirtualInputManager:SendKeyEvent(false, k, false, game)
-            end)
-        end
-    end
-end)
-
-if ButtonsFolder then
-    ButtonsFolder.ChildAdded:Connect(function(btn)
-        if Options.Autofarm.Value or Options.OPFarm.Value then
-            if flightConnection then flightConnection:Disconnect(); flightConnection = nil end
-            isFlying = false; opFarmInitialized = false; RootPart.Anchored = false
-            task.wait(0.15)
-            POST:FireServer("Attacks", "Slash_Escape")
-            btn:Destroy(); task.wait(0.3)
-            
-            local currentBossTarget = getAvailableBossWeakPoint()
-            
-            if Options.OPFarm.Value then
-                if currentBossTarget then
-                    executeBossBurst(currentBossTarget, Options.BurstAmount.Value)
-                else
-                    local t = getAllTargets(); local l = {}
-                    for i = 1, math.min(#t, OP_MAX_TARGETS) do table.insert(l, t[i]) end
-                    if #l > 0 then executeOPSlash(l) end
-                end
-            else
-                if currentBossTarget then
-                    executeBossBurst(currentBossTarget, Options.BurstAmount.Value)
-                else
-                    local t, _ = getTargetCluster(Options.TargetLimit.Value, Options.AoERadius.Value)
-                    if #t > 0 then executeMultiSlash(t) end
-                end
-            end
-        end
-    end)
 end
-
-spawn(function()
-    while task.wait(2) do
-        if Options.AutoJoinBoosted.Value then
-            local inlobby = Workspace:GetAttribute("Map") == "Lobby"
-            if inlobby then
-                if tick() - lastJoinAttempt > 5 then
-                    lastJoinAttempt = tick()
-                    joinBoostedMission()
-                end
-            end
-        end
-    end
-end)
-
-spawn(function()
-    while task.wait(2) do
-        if not Options.AutoRetry.Value then continue end
-        
-        local shouldProcess = false
-        if isRaidMap then
-            if isRaidCompleted() then shouldProcess = true end
-        else
-            if getAliveTitanCount() == 0 then shouldProcess = true end
-        end
-        
-        if shouldProcess and not isLobby then
-            runCounter = runCounter + 1
-            saveRunCount() -- บันทึกเมื่อเพิ่ม
-            
-            local maxRuns = tonumber(Options.MaxRuns.Value) or 0
-            
-            if maxRuns > 0 and runCounter >= maxRuns then
-                Library:Notify({Title="Run Limit Reached", Content="Teleporting to lobby...", Duration=5})
-                pcall(function() POST:FireServer("Functions", "Teleport") end)
-                -- ไม่จำเป็นต้องรีเซ็ตตรงนี้ เพราะ Loop ตรวจจับ Lobby จะรีเซ็ตให้อัตโนมัติ
-            else
-                if isRaidMap then openRaidChests() task.wait(1.5) end
-                pcall(function() GET:InvokeServer("Functions", "Retry", "Add") end)
-                farmingStarted = false
-                task.wait(6)
-            end
-        end
-    end
-end)
-
--- ==========================================
--- [ 6. Save/Load ]
--- ==========================================
-SaveManager:SetLibrary(Library)
-InterfaceManager:SetLibrary(Library)
-SaveManager:IgnoreThemeSettings()
-SaveManager:SetIgnoreIndexes({})
-InterfaceManager:SetFolder("FluentScriptHub")
-SaveManager:SetFolder("NonnyHub/game")
-InterfaceManager:BuildInterfaceSection(Tabs.Settings)
-SaveManager:BuildConfigSection(Tabs.Settings)
-
-local function getAutoSaveFile() return "autosave_" .. tostring(Player.Name) .. "_" .. tostring(game.GameId) end
-task.spawn(function()
-    local n = getAutoSaveFile(); local f = SaveManager.Folder .. "/settings/" .. n .. ".json"
-    if isfile(f) then local s = SaveManager:Load(n); if s then Library:Notify({ Title = "Config", Content = "Auto-loaded", Duration = 3 }) end end
-end)
-local function autoSave() SaveManager:Save(getAutoSaveFile()) end
-for _, o in pairs(Options) do if o.OnChanged then o:OnChanged(autoSave) end end
-
-Window:SelectTab(1)
-Library:Notify({Title="Loaded", Content="Script Fixed & Applied!", Duration=5})
-SaveManager:LoadAutoloadConfig()
