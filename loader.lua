@@ -1,101 +1,101 @@
 -- Ken's Hardened V2 Fix
 
-local b64_0xl11llI = {}
-local char_0x11IIl1='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-for i_0xlI1IIl=1,#char_0x11IIl1 do b64_0xl11llI[char_0x11IIl1:sub(i_0xlI1IIl,i_0xlI1IIl)] = i_0xlI1IIl - 1 end
+local b64_0x1lI1l1 = {}
+local char_0xl1I1ll='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for i_0xllIllI=1,#char_0xl1I1ll do b64_0x1lI1l1[char_0xl1I1ll:sub(i_0xllIllI,i_0xllIllI)] = i_0xllIllI - 1 end
 
-function b64_0xl11llI.dec_0xIIlIlI(d_0xlIlI1l)
-    d_0xlIlI1l = string.gsub(d_0xlIlI1l, '[^'..char_0x11IIl1..'=]', '')
-    local r_0xIIl1I1 = {}
-    for i_0xlI1IIl=1, #d_0xlIlI1l, 4 do
-        local c_0x11l1Il = b64_0xl11llI[d_0xlIlI1l:sub(i_0xlI1IIl,i_0xlI1IIl)] or 0
-        local c_0xII111I = b64_0xl11llI[d_0xlIlI1l:sub(i_0xlI1IIl+1,i_0xlI1IIl+1)] or 0
-        local c_0x1IIlIl, c_0xIlIIII = 0, 0
+function b64_0x1lI1l1.dec_0xllIlII(d_0x11II1I)
+    d_0x11II1I = string.gsub(d_0x11II1I, '[^'..char_0xl1I1ll..'=]', '')
+    local r_0xll1Ill = {}
+    for i_0xllIllI=1, #d_0x11II1I, 4 do
+        local c_0xII11lI = b64_0x1lI1l1[d_0x11II1I:sub(i_0xllIllI,i_0xllIllI)] or 0
+        local c_0xII1Il1 = b64_0x1lI1l1[d_0x11II1I:sub(i_0xllIllI+1,i_0xllIllI+1)] or 0
+        local c_0xIlllII, c_0xlIII1l = 0, 0
         local has3 = true
         local has4 = true
-        local ch3 = d_0xlIlI1l:sub(i_0xlI1IIl+2,i_0xlI1IIl+2)
-        if ch3 == "=" then has3 = false else c_0x1IIlIl = b64_0xl11llI[ch3] or 0 end
-        local ch4 = d_0xlIlI1l:sub(i_0xlI1IIl+3,i_0xlI1IIl+3)
-        if ch4 == "=" then has4 = false else c_0xIlIIII = b64_0xl11llI[ch4] or 0 end
-        local b_0xlIlIlI = c_0x11l1Il * (2^18) + c_0xII111I * (2^12) + c_0x1IIlIl * (2^6) + c_0xIlIIII
-        local b_0xIIllll = math.floor(b_0xlIlIlI / (2^16)) % (2^8)
-        local b_0xIl1ll1 = math.floor(b_0xlIlIlI / (2^8)) % (2^8)
-        local b_0x1IIllI = b_0xlIlIlI % (2^8)
-        table.insert(r_0xIIl1I1, string.char(b_0xIIllll))
-        if has3 then table.insert(r_0xIIl1I1, string.char(b_0xIl1ll1)) end
-        if has4 then table.insert(r_0xIIl1I1, string.char(b_0x1IIllI)) end
+        local ch3 = d_0x11II1I:sub(i_0xllIllI+2,i_0xllIllI+2)
+        if ch3 == "=" then has3 = false else c_0xIlllII = b64_0x1lI1l1[ch3] or 0 end
+        local ch4 = d_0x11II1I:sub(i_0xllIllI+3,i_0xllIllI+3)
+        if ch4 == "=" then has4 = false else c_0xlIII1l = b64_0x1lI1l1[ch4] or 0 end
+        local b_0xlIllll = c_0xII11lI * (2^18) + c_0xII1Il1 * (2^12) + c_0xIlllII * (2^6) + c_0xlIII1l
+        local b_0x1l1lI1 = math.floor(b_0xlIllll / (2^16)) % (2^8)
+        local b_0xIl1IIl = math.floor(b_0xlIllll / (2^8)) % (2^8)
+        local b_0xl1IIll = b_0xlIllll % (2^8)
+        table.insert(r_0xll1Ill, string.char(b_0x1l1lI1))
+        if has3 then table.insert(r_0xll1Ill, string.char(b_0xIl1IIl)) end
+        if has4 then table.insert(r_0xll1Ill, string.char(b_0xl1IIll)) end
     end
-    return table.concat(r_0xIIl1I1)
+    return table.concat(r_0xll1Ill)
 end
 
 
-local function bxor_0xIllll1(a_0xII1lll,b_0xlII1lI)
-    if bit32 then return bit32.bxor(a_0xII1lll,b_0xlII1lI) end
-    local r_0xIlIII1 = 0
-    for i_0xIIll11 = 0, 7 do
-        local x_0xI1Ill1 = a_0xII1lll % 2
-        local y_0x11lIl1 = b_0xlII1lI % 2
-        if x_0xI1Ill1 ~= y_0x11lIl1 then r_0xIlIII1 = r_0xIlIII1 + (2^i_0xIIll11) end
-        a_0xII1lll = math.floor(a_0xII1lll / 2)
-        b_0xlII1lI = math.floor(b_0xlII1lI / 2)
+local function bxor_0xlIlIlI(a_0xlIlIl1,b_0x111lI1)
+    if bit32 then return bit32.bxor(a_0xlIlIl1,b_0x111lI1) end
+    local r_0x1llIlI = 0
+    for i_0xlIl1ll = 0, 7 do
+        local x_0xlll1II = a_0xlIlIl1 % 2
+        local y_0xI1lIl1 = b_0x111lI1 % 2
+        if x_0xlll1II ~= y_0xI1lIl1 then r_0x1llIlI = r_0x1llIlI + (2^i_0xlIl1ll) end
+        a_0xlIlIl1 = math.floor(a_0xlIlIl1 / 2)
+        b_0x111lI1 = math.floor(b_0x111lI1 / 2)
     end
-    return r_0xIlIII1
+    return r_0x1llIlI
 end
 
 
-local function bxor_str_0xlI1Ill(s_0x1IIII1, k_0xlIIl11)
-    local r_0xlllIlI = {}
-    for i_0xIlIIIl=1, #s_0x1IIII1 do
-        local b_0xlI1IIl = string.byte(s_0x1IIII1, i_0xIlIIIl)
-        local kb_0xI11III = string.byte(k_0xlIIl11, (i_0xIlIIIl-1) % #k_0xlIIl11 + 1)
-        r_0xlllIlI[i_0xIlIIIl] = string.char(bxor_0xIllll1(b_0xlI1IIl, kb_0xI11III))
+local function bxor_str_0xI1IIIl(s_0x1111Il, k_0xlIlll1)
+    local r_0x1IlIII = {}
+    for i_0xI1I1II=1, #s_0x1111Il do
+        local b_0xII11ll = string.byte(s_0x1111Il, i_0xI1I1II)
+        local kb_0xlI1lll = string.byte(k_0xlIlll1, (i_0xI1I1II-1) % #k_0xlIlll1 + 1)
+        r_0x1IlIII[i_0xI1I1II] = string.char(bxor_0xlIlIlI(b_0xII11ll, kb_0xlI1lll))
     end
-    return table.concat(r_0xlllIlI)
+    return table.concat(r_0x1IlIII)
 end
 
 
-local function getkeys_0xI11IlI()
-    local seed = b64_0xl11llI.dec_0xIIlIlI("WUR2TmdkRDg=")
-    local k1_enc = b64_0xl11llI.dec_0xIIlIlI("CzQcPVA9KHw=")
-    local k2_enc = b64_0xl11llI.dec_0xIIlIlI("bzM5DRVVMU0=")
-    return bxor_str_0xlI1Ill(k1_enc, seed), bxor_str_0xlI1Ill(k2_enc, seed)
+local function getkeys_0xllIIII()
+    local seed = b64_0x1lI1l1.dec_0xllIlII("b0VVRTRVbG0=")
+    local k1_enc = b64_0x1lI1l1.dec_0xllIlII("BBUAdkYsNCw=")
+    local k2_enc = b64_0x1lI1l1.dec_0xllIlII("Ig48MlofVA8=")
+    return bxor_str_0xI1IIIl(k1_enc, seed), bxor_str_0xI1IIIl(k2_enc, seed)
 end
 
 
-local function cff_0x1IIl1I(a_0xlIllII)
-    local st_0xIlI1Il = 0
-    local res_0xIlI1ll = a_0xlIllII
+local function cff_0xllIllI(a_0xIl1I1I)
+    local st_0xIlI1ll = 0
+    local res_0x111lII = a_0xIl1I1I
     while true do
-        if st_0xIlI1Il == 0 then
-            res_0xIlI1ll = res_0xIlI1ll + 1
-            st_0xIlI1Il = 1
-        elseif st_0xIlI1Il == 1 then
-            res_0xIlI1ll = res_0xIlI1ll * 2
-            st_0xIlI1Il = 2
-        elseif st_0xIlI1Il == 2 then
-            res_0xIlI1ll = res_0xIlI1ll - 3
-            st_0xIlI1Il = 3
+        if st_0xIlI1ll == 0 then
+            res_0x111lII = res_0x111lII + 1
+            st_0xIlI1ll = 1
+        elseif st_0xIlI1ll == 1 then
+            res_0x111lII = res_0x111lII * 2
+            st_0xIlI1ll = 2
+        elseif st_0xIlI1ll == 2 then
+            res_0x111lII = res_0x111lII - 3
+            st_0xIlI1ll = 3
         else
             break
         end
     end
-    return res_0xIlI1ll
+    return res_0x111lII
 end
 
 
-local function chain_0xlIII1l(x) return x*2 end
-local function chain_0x1IIllI(x) return chain_0xlIII1l(x)+1 end
+local function chain_0xl1lIIl(x) return x*2 end
+local function chain_0xIlll1I(x) return chain_0xl1lIIl(x)+1 end
 
 
-local d_0x11Illl = {
-  {op=255, val="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", is_enc=true},
+local d_0xIlIlIl = {
+  {op=255, val="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", is_enc=true},
 }
-local pc_0xlI1IlI = 1
-local stk_0xIIIIll = {}
-stk_0xIIIIll._jmp = nil
+local pc_0x1lI1ll = 1
+local stk_0xlllll1 = {}
+stk_0xlllll1._jmp = nil
 
 
-local disp_0xIlI1Il = {
+local disp_0xlI11Il = {
     [0] = function() end,
     [1] = function(s, v) table.insert(s, v) end,
     [2] = function(s, v) table.insert(s, _G[v]) end,
@@ -140,35 +140,35 @@ local disp_0xIlI1Il = {
 
 
 
-local k1, k2 = getkeys_0xI11IlI()
+local k1, k2 = getkeys_0xllIIII()
 
-local state_0xlI1III = 0
+local state_0xlI1IlI = 0
 while true do
-    if state_0xlI1III == 0 then  -- FETCH
-        if pc_0xlI1IlI > #d_0x11Illl then break end
-        local inst = d_0x11Illl[pc_0xlI1IlI]
+    if state_0xlI1IlI == 0 then  -- FETCH
+        if pc_0x1lI1ll > #d_0xIlIlIl then break end
+        local inst = d_0xIlIlIl[pc_0x1lI1ll]
         local opcode = inst.op
         local val = inst.val
         if inst.is_enc then
-            local d = b64_0xl11llI.dec_0xIIlIlI(val)
-            d = bxor_str_0xlI1Ill(d, k2)
-            val = bxor_str_0xlI1Ill(d, k1)
+            local d = b64_0x1lI1l1.dec_0xllIlII(val)
+            d = bxor_str_0xI1IIIl(d, k2)
+            val = bxor_str_0xI1IIIl(d, k1)
         end
-        stk_0xIIIIll._jmp = nil
-        pc_0xlI1IlI = pc_0xlI1IlI + 1
-        cur_op_0x1lI1II = opcode
-        cur_val_0xIIIIlI = val
-        state_0xlI1III = 1
+        stk_0xlllll1._jmp = nil
+        pc_0x1lI1ll = pc_0x1lI1ll + 1
+        cur_op_0xIIIlll = opcode
+        cur_val_0xllIIl1 = val
+        state_0xlI1IlI = 1
 
-    elseif state_0xlI1III == 1 then  -- EXECUTE
-        local handler = disp_0xIlI1Il[cur_op_0x1lI1II]
+    elseif state_0xlI1IlI == 1 then  -- EXECUTE
+        local handler = disp_0xlI11Il[cur_op_0xIIIlll]
         if handler then
-            handler(stk_0xIIIIll, cur_val_0xIIIIlI)
+            handler(stk_0xlllll1, cur_val_0xllIIl1)
         end
-        if stk_0xIIIIll._jmp then
-            pc_0xlI1IlI = pc_0xlI1IlI + stk_0xIIIIll._jmp
+        if stk_0xlllll1._jmp then
+            pc_0x1lI1ll = pc_0x1lI1ll + stk_0xlllll1._jmp
         end
-        state_0xlI1III = 0
+        state_0xlI1IlI = 0
     else
         break
     end
